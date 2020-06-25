@@ -65,7 +65,7 @@
                               (symbol :tag "tag list") (symbol :tag "symbol list")))))
   )
 
-(defcustom asymbol/symbol-alist-unary-operators
+(defcustom asymbol-symbol-alist-unary-operators
   '(
     (?N ( "\\invneg" "⌐" ))
     (?n ( "\\neg" "¬" ))
@@ -83,7 +83,7 @@
   :type 'asymbol-symbol-alist
   )
 
-(defcustom asymbol/symbol-alist-binary-operators
+(defcustom asymbol-symbol-alist-binary-operators
   '(
     (?+ ( "\\pm"  "±" ))
     (?- ( "\\mp"  "∓" ))
@@ -111,7 +111,7 @@
   )
 
 
-(defcustom asymbol/symbol-alist-top-level
+(defcustom asymbol-symbol-alist-top-level
   '(
 
    (?A ("\\Alpha"  "Α" ))
@@ -196,10 +196,10 @@
   :type 'asymbol-symbol-alist
   )
 
-(defcustom asymbol/tag-alist-top-level
+(defcustom asymbol-tag-alist-top-level
   '(
-    (?1 ("unary operators" asymbol/tag-alist-top-level asymbol/symbol-alist-unary-operators))
-    (?2 ("binary operators" asymbol/tag-alist-top-level asymbol/symbol-alist-binary-operators))
+    (?1 ("unary operators" asymbol-tag-alist-top-level asymbol-symbol-alist-unary-operators))
+    (?2 ("binary operators" asymbol-tag-alist-top-level asymbol-symbol-alist-binary-operators))
     (?3 ("set/logic notation"))
     (?4 ("relations"))
     (?5 ("delimiters"))
@@ -207,9 +207,9 @@
     (?7 ("arrows"))
     (?8 ("miscellaneous symbols"))
     (?9 ("others"))
-    (?0 ("top" asymbol/tag-alist-top-level asymbol/symbol-alist-top-level))
+    (?0 ("top" asymbol-tag-alist-top-level asymbol-symbol-alist-top-level))
     )
-  "navigation tags shown on the top leve for asymbol."
+  "navigation tags shown on the top level for asymbol."
   :group 'asymbol
   :type 'asymbol-tag-alist
   )
@@ -291,7 +291,8 @@
 (defun asymbol/insert-text-or-symbol (&optional tuple text-or-symbol)
   "insert the text or symbol in tuple"
   (interactive)
-  (or tuple (setq tuple (asymbol/read-char-with-help asymbol/tag-alist-top-level asymbol/symbol-alist-top-level 0 3)))
+  (or tuple
+      (setq tuple (asymbol/read-char-with-help asymbol-tag-alist-top-level asymbol-symbol-alist-top-level 0 3)))
   (or text-or-symbol (setq text-or-symbol 'text))
   (case text-or-symbol
     ('text (insert (car tuple)))
@@ -299,9 +300,9 @@
   )
 
 ;; test
-;; (asymbol/read-char-with-help asymbol/tag-alist-top-level asymbol/symbol-alist-top-level 0 3)
+;; (asymbol/read-char-with-help asymbol-tag-alist-top-level asymbol-symbol-alist-top-level 0 3)
 ;; (asymbol/insert-text-or-symbol
-;;  (asymbol/read-char-with-help asymbol/tag-alist-top-level asymbol/symbol-alist-top-level 0 3)
+;;  (asymbol/read-char-with-help asymbol-tag-alist-top-level asymbol-symbol-alist-top-level 0 3)
 ;;  'text)
 
 (provide 'asymbol)
