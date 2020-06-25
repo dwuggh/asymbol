@@ -46,7 +46,13 @@
   :type '(choice
           (character)))
 
-(define-widget 'asymbol-symbol-alist 'repeat
+(defcustom asymbol-trigger-key-unicode ?\C-`
+  "Prefix key for `asymbol/insert-text-or-symbol'."
+  :group 'asymbol
+  :type '(choice
+          (character)))
+
+(define-widget 'asymbol-symbol-alist 'lazy
   "an alist to describe symbols"
   :tag "ASymbol-symbol"
   :type '(repeat
@@ -56,7 +62,7 @@
             (list (string :tag "text") (string :tag "symbol")))))
   )
 
-(define-widget 'asymbol-tag-alist 'repeat
+(define-widget 'asymbol-tag-alist 'lazy
   "an alist to describe tags (classification of symbols)"
   :tag "ASymbol-tag"
   :type '(repeat
@@ -198,8 +204,8 @@
 
 (defcustom asymbol-tag-alist-top-level
   '(
-    (?1 ("unary operators" asymbol-tag-alist-top-level asymbol-symbol-alist-unary-operators))
-    (?2 ("binary operators" asymbol-tag-alist-top-level asymbol-symbol-alist-binary-operators))
+    (?1 ("unary operators" asymbol-symbol-alist-unary-operators asymbol-tag-alist-top-level))
+    (?2 ("binary operators" asymbol-symbol-alist-binary-operators asymbol-tag-alist-top-level))
     (?3 ("set/logic notation"))
     (?4 ("relations"))
     (?5 ("delimiters"))
@@ -207,21 +213,45 @@
     (?7 ("arrows"))
     (?8 ("miscellaneous symbols"))
     (?9 ("others"))
-    (?0 ("top" asymbol-tag-alist-top-level asymbol-symbol-alist-top-level))
+    (?0 ("top" asymbol-symbol-alist-top-level asymbol-tag-alist-top-level))
     )
   "navigation tags shown on the top level for asymbol."
   :group 'asymbol
   :type 'asymbol-tag-alist
   )
 
-(defun asymbol/print-help-list (alist level)
+
+;; copied from `cdlatex-use-fonts'
+(defcustom asymbol-use-fonts t
+  "if non-nil, use fonts in help buffer.
+Font-lock must be loaded as well to actually get fontified display."
+  :group 'asymbol
+  :type '(boolean))
+
+(defun asymbol/use-fonts ()
+  ;; Return t if we can and want to use fonts.
+  (and window-system
+       asymbol-use-fonts
+       (boundp 'font-lock-keyword-face)))
+
+;; maybe there are better ways to write composite functions?
+;; maybe use dash's `-compose'?
+(defun asymbol/alist-max-layer (alist)
+  "return maximum layers needed for this alist.
+it is actually the max length of `(cdr alist)'.
+if alist is nil, return 0."
+  (if alist (reduce 'max (map 'list (lambda (el) (length (cdr el))) alist))
+    0))
+
+
+(defun asymbol/print-help-list (alist layer)
   "print help according to alist"
-  (let ((cnt 0))
+  (let ((cnt 0) (flock (asymbol/use-fonts)))
     (dolist (element alist)
       (if (= (% cnt 4) 0) (insert "\n"))
       (setq cnt (+ 1 cnt))
       (let* ((char (car element))
-             (prop (nth level (cdr element)))
+             (prop (nth layer (cdr element)))
              )
         (if prop
             (let* ((desc (car prop))
@@ -229,6 +259,7 @@
                    (pstr (substring (concat
                                      (when (and symb (stringp symb))
                                        (concat symb "     ")) desc "                    ") 0 20)))
+              (when flock (put-text-property 0 20 'face 'font-lock-keyword-face pstr))
               (insert char "  " pstr))
           (insert char "  " "                    ")
           )
@@ -237,62 +268,78 @@
     )
   )
 
-(defun asymbol/turn-on-help (title taglist symlist level)
-  "Show help windows for symbols"
-  (interactive)
-  (let ((nopk 0))
-    (if (get-buffer-window " *ASymbol Help*")
-        (select-window (get-buffer-window " *ASymbol Help*"))
+(defun asymbol/update-help-buffer (title taglist symlist layer max-layer level-desc)
+  "Update help windows for symbols.
+Create one if the help does not exist."
+  (if (get-buffer-window " *ASymbol Help*")
+      (select-window (get-buffer-window " *ASymbol Help*"))
       (switch-to-buffer-other-window " *ASymbol Help*"))
-    (erase-buffer)
-    (insert title "\n\n")
-    (insert "--------------------------------------------------------------------------------\n")
-    (asymbol/print-help-list taglist level)
-    (insert "--------------------------------------------------------------------------------\n")
-    (asymbol/print-help-list symlist level)
-    ))
+  (erase-buffer)
+  (insert title "\n\n")
+  (insert "navigation bar\n")
+  (insert "--------------------------------------------------------------------------------\n")
+  (asymbol/print-help-list taglist layer)
+  (insert "\nsymbols\n")
+  (insert "--------------------------------------------------------------------------------\n")
+  (asymbol/print-help-list symlist layer)
+  (message (concat level-desc ": layer %d of %d") (+ 1 layer) max-layer)
+  )
 
-
-(defun asymbol/read-char-with-help (taglist symlist start-level max-level)
-  "read a char from keyboard and provide help"
+(defun asymbol/read-char-with-help (taglist symlist)
+  "like `cdlatex-read-char-with-help', read a char from keyboard and provide help
+taglist is the current alist of navigation tags.
+symlist is the current alist of symbols.
+start-layer is always 0 for now.
+one layer is contains every symbol on current help buffer.
+e.g. if we have: `(?f ( \"\\phi\" \"ϕ\" ) ( \"\\varphi\"  \"φ\"))', then
+we need at least 2 layers to represent f fully.
+layers are switched through `asymbol-trigger-key'
+"
   (let (char
         value
-        (level start-level))
+        (level-desc "top level ")
+        (layer 0)
+        (max-layer (max (asymbol/alist-max-layer taglist)
+                        (asymbol/alist-max-layer symlist))))
     ;; exit only when finally get a symbol and ready for insert, or just abort
     (catch 'exit
       (save-window-excursion
-        (asymbol/turn-on-help "asdf" taglist symlist level)
+        (asymbol/update-help-buffer "asymbol help" taglist symlist layer max-layer level-desc)
         (while t
           (setq char (read-char))
           (cond
-           ((= char ?\C-g) (keyboard-quit))
+           ((or (= char ?\e) (= char ?\C-g)) (keyboard-quit))
            ((= char asymbol-trigger-key)
-            (setq level (% (+ 1 level) max-level))
-            (asymbol/turn-on-help "asdf" taglist symlist level))
+            (setq layer (% (+ 1 layer) max-layer))
+            (asymbol/update-help-buffer "asymbol help" taglist symlist layer max-layer level-desc)
+            )
 
            ;; rewrite help buffer for which tag points to
            ((setq value (assoc char taglist))
             (let* ((key (car value))
-                   (tuple (nth level (cdr value)))
-                   (desc (car tuple))
+                   (tuple (nth layer (cdr value)))
                    (target (cdr tuple)))
-              (setq taglist (symbol-value (car target)))
-              (setq symlist (symbol-value (car (cdr target))))
-              (setq level 0)
-              (asymbol/turn-on-help "asdf" taglist symlist level)))
+              (setq taglist (or (symbol-value (car (cdr target))) asymbol-tag-alist-top-level))
+              (setq symlist (symbol-value (car target)))
+              (setq level-desc (car tuple))
+              (setq max-layer (max (asymbol/alist-max-layer taglist)
+                                   (asymbol/alist-max-layer symlist)))
+              (asymbol/update-help-buffer "asymbol help" taglist symlist 0 max-layer level-desc)
+              ;; (message (concat desc ": layer %d of %d") layer max-layer)
+              ))
 
            ;; exit with `(text unicode-symbol)'
            ((setq value (assoc char symlist))
-            (throw 'exit (nth level (cdr value))))
+            (throw 'exit (nth layer (cdr value))))
            (t
             ))
           )))))
 
-(defun asymbol/insert-text-or-symbol (&optional tuple text-or-symbol)
+(defun asymbol/insert-text-or-symbol (&optional text-or-symbol tuple)
   "insert the text or symbol in tuple"
   (interactive)
   (or tuple
-      (setq tuple (asymbol/read-char-with-help asymbol-tag-alist-top-level asymbol-symbol-alist-top-level 0 3)))
+      (setq tuple (asymbol/read-char-with-help asymbol-tag-alist-top-level asymbol-symbol-alist-top-level)))
   (or text-or-symbol (setq text-or-symbol 'text))
   (case text-or-symbol
     ('text (insert (car tuple)))
@@ -305,6 +352,16 @@
 ;;  (asymbol/read-char-with-help asymbol-tag-alist-top-level asymbol-symbol-alist-top-level 0 3)
 ;;  'text)
 
+;;; keybindings -----------------------------------------------------------------
+
+(add-hook 'tex-mode-hook
+          (lambda ()
+            (define-key latex-mode-map (vector asymbol-trigger-key ) 'asymbol/insert-text-or-symbol)
+            ))
+(global-set-key (vector asymbol-trigger-key-unicode)
+                (lambda () (interactive) (asymbol/insert-text-or-symbol 'symbol)))
+
+
 (provide 'asymbol)
 
-;;; .el ends here
+;;; asymbol.el ends here
