@@ -1,2 +1,16 @@
 # asymbol
 fast symbol input method for latex and org mode inspired by cdlatex
+
+## status
+under development yet
+
+## Description
+This package classifies a lot of math and non-math symbols and provide a cdlatex-like input method.
+### the reason why I wrote this
+The cdlatex's cdlatex-math-symbol function was incrediably helpful that it saved me from memorizing all kinds 
+of strange symbols and its codes. But it wasn't good enough, since it contains very limit numbers of symbols, 
+and it would be too messy if you add a lot symbols in your customization. So I separated that part of cdlatex, 
+enhanced it and made this package. 
+
+## Usage
+for now, just use `M-x asymbol/insert-text-or-symbol` for a quick try.
