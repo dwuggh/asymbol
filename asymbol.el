@@ -436,6 +436,9 @@ Font-lock must be loaded as well to actually get fontified display."
   :group 'asymbol
   :type '(boolean))
 
+;;; utilities ------------------------------------------------------------------
+
+;; copied from `cdlatex-use-fonts'
 (defun asymbol/use-fonts ()
   ;; Return t if we can and want to use fonts.
   (and window-system
@@ -452,11 +455,23 @@ if alist is nil, return 0."
     0))
 
 
-(defun asymbol/print-help-list (alist layer)
-  "print help according to alist"
-  (let ((cnt 0) (flock (asymbol/use-fonts)))
+(defun asymbol/print-help-list (alist layer &optional linewidth max-cnt sparse)
+  "print the help buffer according to alist.
+linewidth is not the buffer's width.
+max-cnt is the number of elements (from alist) shown in one line."
+  (or linewidth (setq linewidth 100))
+  (or max-cnt (setq max-cnt 4))
+  (let ((cnt 0)
+        (flock (asymbol/use-fonts))
+        ;; 3 is the width of the character and 2 space
+        (interval (- (/ linewidth max-cnt) 3)))
     (dolist (element alist)
-      (if (= (% cnt 4) 0) (insert "\n"))
+      (if (= (% cnt max-cnt) 0)
+          (progn
+            (insert "\n")
+            ;; insert another blank line to make it less crowded
+            (if (or sparse (>= max-cnt 4)) (insert "\n"))
+            ))
       (setq cnt (+ 1 cnt))
       (let* ((char (car element))
              (prop (nth layer (cdr element)))
@@ -466,10 +481,11 @@ if alist is nil, return 0."
                    (symb (car (cdr prop)))
                    (pstr (substring (concat
                                      (when (and symb (stringp symb))
-                                       (concat symb "     ")) desc "                    ") 0 20)))
-              (when flock (put-text-property 0 20 'face 'font-lock-keyword-face pstr))
+                                       (substring (concat symb "    ") 0 5))
+                                     desc (make-string interval ?\s)) 0 interval)))
+              (when flock (put-text-property 0 interval 'face 'font-lock-keyword-face pstr))
               (insert char "  " pstr))
-          (insert char "  " "                    ")
+          (insert char "  " (make-string interval ?\s))
           )
         ))
     (insert "\n")
@@ -477,19 +493,21 @@ if alist is nil, return 0."
   )
 
 (defun asymbol/update-help-buffer (title taglist symlist layer max-layer level-desc)
-  "Update help windows for symbols.
+  "Update help windows for tags and symbols.
 Create one if the help does not exist."
   (if (get-buffer-window " *ASymbol Help*")
       (select-window (get-buffer-window " *ASymbol Help*"))
       (switch-to-buffer-other-window " *ASymbol Help*"))
   (erase-buffer)
   (insert title "\n\n")
-  (insert "navigation bar\n")
+  (insert "navigation tags\n")
   (insert "--------------------------------------------------------------------------------\n")
-  (asymbol/print-help-list taglist layer)
+  ;; taglist most likely to have less layers
+  (asymbol/print-help-list taglist (min layer (- (asymbol/alist-max-layer taglist) 1))
+                           asymbol-help-tag-linewidth asymbol-help-tag-count)
   (insert "\nsymbols\n")
   (insert "--------------------------------------------------------------------------------\n")
-  (asymbol/print-help-list symlist layer)
+  (asymbol/print-help-list symlist layer asymbol-help-symbol-linewidth asymbol-help-symbol-count)
   (message (concat level-desc ": layer %d of %d") (+ 1 layer) max-layer)
   )
 
@@ -525,7 +543,7 @@ layers are switched through `asymbol-trigger-key'
            ;; rewrite help buffer for which tag points to
            ((setq value (assoc char taglist))
             (let* ((key (car value))
-                   (tuple (nth layer (cdr value)))
+                   (tuple (nth (min layer (- (asymbol/alist-max-layer taglist) 1)) (cdr value)))
                    (target (cdr tuple)))
               (setq taglist (or (symbol-value (car (cdr target))) asymbol-tag-alist-top-level))
               (setq symlist (symbol-value (car target)))
