@@ -52,6 +52,26 @@
   :type '(choice
           (character)))
 
+(defcustom asymbol-help-tag-linewidth 100
+  "linewidth of the tag section of help buffer."
+  :group 'asymbol
+  :type '(integer))
+
+(defcustom asymbol-help-symbol-linewidth 100
+  "linewidth of the symbol section of help buffer."
+  :group 'asymbol
+  :type '(integer))
+
+(defcustom asymbol-help-tag-count 3
+  "The number of tags shown inside one line in help buffer."
+  :group 'asymbol
+  :type '(integer))
+
+(defcustom asymbol-help-symbol-count 4
+  "The number of symbols shown inside one line in help buffer."
+  :group 'asymbol
+  :type '(integer))
+
 (define-widget 'asymbol-symbol-alist 'lazy
   "an alist to describe symbols"
   :tag "ASymbol-symbol"
@@ -116,6 +136,89 @@
   :type 'asymbol-symbol-alist
   )
 
+(defcustom asymbol-symbol-alist-set-logic-notations
+  '(
+    (?N ( "\\mathbb{N}"  "ℕ"))
+    (?C ( "\\mathbb{C}"  "ℂ" ))
+    ;; (?P ("\\wp" "℘"))
+    (?P ( "\\mathbb{P}"  "ℙ" ))
+    (?Q ( "\\mathbb{Q}"  "ℚ" ))
+    (?r ( "\\mathcal{R}"  "ℛ"))
+    (?R ( "\\mathbb{R}" "ℝ" ) ( "\\Re"  "ℜ" ))
+    (?Z ( "\\mathbb{Z}"  "ℤ" ))
+    (?O ( "\\emptyset"  "∅" ) ("\\revemptyset"  "⦰"))
+    (?e ( "\\in"  "∈" ) ("\\notin"  "∉") ( "\\smallin"  "∊" ))
+    (?E ( "\\ni"  "∋" ) ( "\\nni"  "∌" ) ( "\\smallni"  "∍" ))
+    (?x ( "\\exists"  "∃" ) ("\\nexists"  "∄"))
+    (?V ( "\\forall"  "∀" ))
+    (?D ( "\\QED"  "∎" ))
+
+    (?c ( "\\subset"  "⊂" ) ( "\\nsubset"  "⊄" ))
+    (?C ( "\\supset"  "⊃" ) ( "\\nsupset"  "⊅" ))
+    (?u ( "\\cup"  "∪" ) ("\\sqcap"  "⊓"))
+    (?n ( "\\cap"  "∩" ) ("\\sqcup"  "⊔"))
+    (?s ( "\\subseteq"  "⊆" ) ( "\\nsubseteq"  "⊈" ) ( "\\subsetneq"  "⊊" ))
+    (?S ( "\\supseteq"  "⊇" ) ( "\\nsupseteq"  "⊉" ) ( "\\supsetneq"  "⊋" ))
+
+    (?l ( "\\land"  "∧" ))
+    (?v ("\\lor"  "∨"))
+    (?> ( "\\Rightarrow"  "⇒" ) ( "\\Longrightarrow"  "⟹" ))
+    (?< ( "\\Leftarrow"  "⇐" ) ("\\Longleftarrow"  "⟸"))
+    (?m ( "\\mapsto"  "↦" ))
+    (?= ( "\\Leftrightarrow"  "⇔" ) ( "\\Longleftrightarrow"  "⟺" ))
+    (?T ( "\\top"  "⊤" ) ("\\topbot"  "⌶"))
+    (?L ( "\\bot"  "⊥" ))
+    )
+  "set and logic symbols."
+  :type 'asymbol-symbol-alist)
+
+(defcustom asymbol-symbol-alist-relations
+  '(
+    
+    (?l ( "\\leq"  "≤" ) ("\\nleq"  "≰"))
+    (?L ( "\\leqslant"  "⩽" ) ( "\\nless"  "≮" ))
+    (?g ( "\\geq"  "≥" ) ("\\ngeq"  "≱"))
+    (?G ( "\\geqslant"  "⩾" ) ( "\\ngtr"  "≯" ))
+    (?k ( "\\leqq"  "≦" ) ( "\\lneqq"  "≨" ))
+    (?K ( "\\geqq"  "≧" ) ( "\\gneqq"  "≩" ))
+
+    (?i ( "\\lesssim"  "≲" ) ("\\NotLessTilde"  "≴"))
+    (?I ( "\\gtrsim"  "≳" ) ("\\NotGreaterTilde"  "≵"))
+
+    (?f ( "\\lessgtr"  "≶" ) ("\\nlessgtr"  "≸"))
+    (?F ( "\\gtrless"  "≷" ) ("\\NotGreaterLess"  "≹"))
+
+
+    (?p ( "\\prec"  "≺" ) ("\\nprec"  "⊀"))
+    (?s ( "\\succ"  "≻" ) ("\\nsucc"  "⊁"))
+    (?P ( "\\preccurlyeq"  "≼" ) ("\\precsim"  "≾"))
+    (?S ( "\\succcurlyeq"  "≽" ) ("\\succsim"  "≿"))
+
+    (?c ( "\\subset"  "⊂" ) ( "\\nsubset"  "⊄" ))
+    (?C ( "\\supset"  "⊃" ) ( "\\nsupset"  "⊅" ))
+    (?u ( "\\subseteq"  "⊆" ) ( "\\nsubseteq"  "⊈" ) ( "\\subsetneq"  "⊊" ))
+    (?U ( "\\supseteq"  "⊇" ) ( "\\nsupseteq"  "⊉" ) ( "\\supsetneq"  "⊋" ))
+    )
+  "relation symbols, like ∈"
+  :type 'asymbol-symbol-alist)
+
+(defcustom asymbol-symbol-alist-delimiters
+  '(
+    (?< ( "\\langle"  "⟨" ))
+    (?> ( "\\rangle"  "⟩" ))
+    (?| ( "\\|"  "‖" ))
+    (?\s ("" ""))
+    (?r ( "\\ulcorner"  "⌜" ))
+    (?u ( "\\urcorner"  "⌝" ))
+    (?c ( "\\llcorner"  "⌞" ))
+    (?n ( "\\lrcorner"  "⌟" ))
+    (?h ( "\\rceil"  "⌉" ))
+    (?j ( "\\rfloor"  "⌋" ))
+    (?k ( "\\lceil"  "⌈" ))
+    (?l ( "\\lfloor"  "⌊" ))
+    )
+  "delimiters used in math and physics"
+  :type 'asymbol-symbol-alist)
 
 (defcustom asymbol-symbol-alist-top-level
   '(
@@ -182,7 +285,7 @@
    (?u ( "\\upsilon"  "υ" ))
 
    (?F ( "\\Phi"  "Φ" ))
-   (?f ( "\\phi" "ϕ" ) ( "\\varphi"  "φ" ))
+   (?f ( "\\varphi"  "φ" ) ( "\\phi" "ϕ" ) )
 
    (?X ( "\\Chi"  "Χ" ))
    (?x ( "\\chi"  "χ" ))
@@ -197,22 +300,127 @@
    ;; ("\\theta2" "ϑ")
    ;; (( "\\upsih"  "ϒ" ))
    )
-  "symbols shown on the top level for asymbol."
+  "symbols shown on the top level for asymbol.
+mostly will be greek alphabets."
   :group 'asymbol
   :type 'asymbol-symbol-alist
   )
+
+(defcustom asymbol-symbol-alist-arrows
+  '(
+    (?h ( "\\leftarrow"  "←" ) ("\\nleftarrow"  "↚"))
+    (?k ( "\\uparrow"  "↑" ))
+    (?j ( "\\downarrow"  "↓" ))
+    (?l ( "\\rightarrow"  "→" ) ("\\nrightarrow"  "↛"))
+    (?H ( "\\Leftarrow"  "⇐" ) ("\\nLeftarrow"  "⇍") ("\\Longleftarrow"  "⟸"))
+
+    (?K ( "\\Uparrow"  "⇑" ))
+    (?J ( "\\Downarrow"  "⇓" ))
+    (?L ( "\\Rightarrow"  "⇒" ) ("\\nRightarrow"  "⇏") ( "\\Longrightarrow"  "⟹" ))
+    (?d ( "\\mapsto"  "↦" ) ("\\nearrow"  "↗") ("\\Nearrow"  "⇗"))
+    (?a ( "\\mapsfrom"  "↤" ) ("\\nwarrow"  "↖") ("\\Nwarrow"  "⇖"))
+    (?w ( "\\MapsUp"  "↥" ) ("\\swarrow"  "↙") ("\\Searrow"  "⇘"))
+    (?s ( "\\MapsDown"  "↧" ) ("\\searrow"  "↘") ("\\Swarrow"  "⇙"))
+    (?- ( "\\leftrightarrow"  "↔" ) ("\\nleftrightarrow"  "↮"))
+    (?= ( "\\Leftrightarrow"  "⇔" ) ("\\nLeftrightarrow"  "⇎") ( "\\Longleftrightarrow"  "⟺" ))
+    (?| ("\\updownarrow"  "↕") ("\\Updownarrow"  "⇕"))
+    
+    
+    (?A ( "\\leftleftarrows"  "⇇" ) ("\\leftrightarrows"  "⇆"))
+    (?W ( "\\upuparrows"  "⇈" ) ("\\updownarrows"  "⇅"))
+    (?D ( "\\rightrightarrows"  "⇉" ) ("\\rightleftarrows"  "⇄"))
+    (?S ( "\\downdownarrows"  "⇊" ) ("\\downuparrows"  "⇵"))
+    (?e ( "\\leftrightharpoons"  "⇋" ) ("\\rightleftharpoons"  "⇌"))
+    (?E ( "\\updownharpoons"  "⥮" ) ( "\\downupharpoons"  "⥯" ))
+    
+    
+    
+    ;; ("\\leftwavearrow"  "↜")
+    ;; ("\\rightwavearrow"  "↝")
+    ;; ("\\twoheadleftarrow"  "↞")
+    ;; ("\\twoheaduparrow"  "↟")
+    ;; ("\\twoheadrightarrow"  "↠")
+    ;; ("\\twoheaddownarrow"  "↡")
+    ;; ("\\leftarrowtail"  "↢")
+    ;; ("\\rightarrowtail"  "↣")
+    ;; ("\\updownarrowbar"  "↨")
+    ;; ("\\hookleftarrow"  "↩")
+    ;; ("\\hookrightarrow"  "↪")
+    ;; ("\\looparrowleft"  "↫")
+    ;; ("\\looparrowright"  "↬")
+    ;; ("\\leftrightsquigarrow"  "↭")
+    ;; ("\\lightning"  "↯")
+    ;; ("\\Lsh"  "↰")
+    ;; ("\\Rsh"  "↱")
+    ;; ("\\dlsh"  "↲")
+    ;; ("\\drsh"  "↳")
+    ;; ("\\linefeed"  "↴")
+    ;; ("\\carriagereturn"  "↵")
+    ;; ("\\curvearrowleft"  "↶")
+    ;; ("\\curvearrowright"  "↷")
+    ;; ("\\barovernorthwestarrow"  "↸")
+    ;; ("\\barleftarrowrightarrowba"  "↹")
+    ;; ("\\circlearrowleft"  "↺")
+    ;; ("\\circlearrowright"  "↻")
+    ;; ("\\leftharpoonup"  "↼")
+    ;; ("\\leftharpoondown"  "↽")
+    ;; ("\\upharpoonright"  "↾")
+    ;; ("\\upharpoonleft"  "↿")
+    ;; ("\\rightharpoonup"  "⇀")
+    ;; ("\\rightharpoondown"  "⇁")
+    ;; ("\\downharpoonright"  "⇂")
+    ;; ("\\downharpoonleft"  "⇃")
+    ;; ("\\Lleftarrow"  "⇚")
+    ;; ("\\Rrightarrow"  "⇛")
+    ;; ("\\leftsquigarrow"  "⇜")
+    ;; ("\\rightsquigarrow"  "⇝")
+    ;; ("\\nHuparrow"  "⇞")
+    ;; ("\\nHdownarrow"  "⇟")
+    ;; ("\\dashleftarrow"  "⇠")
+    ;; ("\\updasharrow"  "⇡")
+    ;; ("\\dashrightarrow"  "⇢")
+    ;; ("\\downdasharrow"  "⇣")
+    ;; ("\\LeftArrowBar"  "⇤")
+    ;; ("\\RightArrowBar"  "⇥")
+    ;; ("\\leftwhitearrow"  "⇦")
+    ;; ("\\upwhitearrow"  "⇧")
+    ;; ("\\rightwhitearrow"  "⇨")
+    ;; ("\\downwhitearrow"  "⇩")
+    ;; ("\\whitearrowupfrombar"  "⇪")
+    ;; ("\\mathord"  "⍹")
+    ;; ("\\circleonrightarrow"  "⇴")
+    ;; ("\\downuparrows"  "⇵")
+    ;; ("\\rightthreearrows"  "⇶")
+    ;; ("\\nvleftarrow"  "⇷")
+    ;; ("\\pfun"  "⇸")
+    ;; ("\\nvleftrightarrow"  "⇹")
+    ;; ("\\nVleftarrow"  "⇺")
+    ;; ("\\ffun"  "⇻")
+    ;; ("\\nVleftrightarrow"  "⇼")
+    ;; ("\\leftarrowtriangle"  "⇽")
+    ;; ("\\rightarrowtriangle"  "⇾")
+    ;; ("\\leftrightarrowtriangle"  "⇿")
+    )
+  "all arrows.")
+
+(defcustom asymbol-symbol-alist-miscellaneous
+  '(
+    (?o ( "\\varhexagonlrbonds"  "⌬" ))
+    (?a ( "\\aleph"  "ℵ" ))
+    )
+  "other symbols.")
 
 (defcustom asymbol-tag-alist-top-level
   '(
     (?1 ("unary operators" asymbol-symbol-alist-unary-operators asymbol-tag-alist-top-level))
     (?2 ("binary operators" asymbol-symbol-alist-binary-operators asymbol-tag-alist-top-level))
-    (?3 ("set/logic notation"))
-    (?4 ("relations"))
-    (?5 ("delimiters"))
+    (?3 ("set/logic notation" asymbol-symbol-alist-set-logic-notations))
+    (?4 ("relations" asymbol-symbol-alist-relations))
+    (?5 ("delimiters" asymbol-symbol-alist-delimiters))
     (?6 ("standard functions"))
-    (?7 ("arrows"))
-    (?8 ("miscellaneous symbols"))
-    (?9 ("others"))
+    (?7 ("arrows" asymbol-symbol-alist-arrows))
+    (?8 ("miscellaneous symbols" asymbol-symbol-alist-miscellaneous))
+    ;; (?9 ("others"))
     (?0 ("top" asymbol-symbol-alist-top-level asymbol-tag-alist-top-level))
     )
   "navigation tags shown on the top level for asymbol."
