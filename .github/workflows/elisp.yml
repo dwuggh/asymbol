@@ -27,3 +27,6 @@ jobs:
     # Runs a single command using the runners shell
     - name: Emacs Lisp check
       uses: leotaku/elisp-check@v1.0
+      with:
+        check: melpa
+        file: asymbol.el
