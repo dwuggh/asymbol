@@ -481,7 +481,7 @@ max-cnt is the number of elements (from alist) shown in one line."
                    (symb (car (cdr prop)))
                    (pstr (substring (concat
                                      (when (and symb (stringp symb))
-                                       (substring (concat symb "    ") 0 5))
+                                       (substring (concat symb "     ") 0 5))
                                      desc (make-string interval ?\s)) 0 interval)))
               (when flock (put-text-property 0 interval 'face 'font-lock-keyword-face pstr))
               (insert char "  " pstr))
@@ -572,21 +572,39 @@ layers are switched through `asymbol-trigger-key'
     ('symbol (insert (car (cdr tuple)))))
   )
 
-;; test
-;; (asymbol/read-char-with-help asymbol-tag-alist-top-level asymbol-symbol-alist-top-level 0 3)
-;; (asymbol/insert-text-or-symbol
-;;  (asymbol/read-char-with-help asymbol-tag-alist-top-level asymbol-symbol-alist-top-level 0 3)
-;;  'text)
 
 ;;; keybindings -----------------------------------------------------------------
 
-(add-hook 'tex-mode-hook
-          (lambda ()
-            (define-key latex-mode-map (vector asymbol-trigger-key ) 'asymbol/insert-text-or-symbol)
-            ))
-(global-set-key (vector asymbol-trigger-key-unicode)
-                (lambda () (interactive) (asymbol/insert-text-or-symbol 'symbol)))
+;; TODO rewrite these ugly functions
+(defun asymbol/latex-input-symbol-on ()
+  "use asymbol in LaTeX."
+  (add-hook 'tex-mode-hook
+            (lambda () (interactive)
+              (define-key latex-mode-map (vector asymbol-trigger-key) 'asymbol/insert-text-or-symbol)
+              (define-key LaTeX-mode-map (vector asymbol-trigger-key) 'asymbol/insert-text-or-symbol)
+              ))
+  (add-hook 'LaTeX-mode-hook
+            (lambda () (interactive)
+              (define-key LaTeX-mode-map (vector asymbol-trigger-key) 'asymbol/insert-text-or-symbol)))
+  ;; (when (fboundp 'cdlatex-mode)
+  ;;   (define-key cdlatex-mode-map (vector asymbol-trigger-key) 'asymbol/insert-text-or-symbol))
+  )
 
+(defun asymbol/org-input-symbol-on ()
+  "Use asymbol in org-mode."
+  (add-hook 'org-mode-hook
+            (lambda () (interactive)
+              (define-key org-mode-map (vector asymbol-trigger-key) 'asymbol/insert-text-or-symbol)))
+  ;; (when (fboundp 'org-cdlatex-mode)
+  ;;   (define-key org-cdlatex-mode-map (vector asymbol-trigger-key) 'asymbol/insert-text-or-symbol))
+  )
+
+(defun asymbol/global-input-unicode-symbol-on ()
+  "turn on asymbol's unicode symbol input method globally.
+use `asymbol-trigger-key-unicode' to activate(default `C-\`', Ctrl-backquote)"
+  (global-set-key (vector asymbol-trigger-key-unicode)
+                  (lambda () (interactive) (asymbol/insert-text-or-symbol 'symbol)))
+  )
 
 (provide 'asymbol)
 
