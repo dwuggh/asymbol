@@ -1,19 +1,47 @@
 #+TITLE: README
 
 * asymbol
-fast symbol input method for latex and org mode inspired by cdlatex
+  fast symbol input method for latex and org mode inspired by cdlatex
 
-** status
-under development yet
 
 ** Description
-This package classifies a lot of math and non-math symbols and provide a cdlatex-like input method.
+   This package classifies a lot of math and non-math symbols and provide a cdlatex-like input method.
+   [[./img/Screenshot_20200626_162518.png]]
 *** the reason why I wrote this
-The cdlatex's cdlatex-math-symbol function was incrediably helpful that it saved me from memorizing all kinds 
-of strange symbols and its codes. But it wasn't good enough, since it contains very limit numbers of symbols, 
-and it would be too messy if you add a lot symbols in your customization. So I separated that part of cdlatex, 
-enhanced it and made this package. 
-
+    The cdlatex's cdlatex-math-symbol function was incrediably helpful that it saved me from memorizing all kinds 
+    of strange symbols and its codes. But it wasn't good enough, since it contains very limit numbers of symbols, 
+    and it would be too messy if you add a lot symbols in your customization. So I separated that part of cdlatex, 
+    enhanced it and made this package. 
+    
 ** Usage
-for now, just use `M-x asymbol/insert-text-or-symbol` for a quick try.
+*** install
+   - clone this repository, add its path to your load path.
+   #+begin_src emacs-lisp :tangle yes
+     ;; using require
+     (require 'asymbol)
+     ;; using use-package
+     (use-package asymbol
+       :init
+       ;; a little customization
+       (setq asymbol-help-symbol-linewidth 110
+             asymbol-help-tag-linewidth 110)
+       ;; add keybindings
+       (asymbol/global-input-unicode-symbol-on)
+       (asymbol/latex-input-symbol-on)
+       (asymbol/org-input-symbol-on)
+       )
+   #+end_src
+   - using it with cdlatex:
+   #+begin_src emacs-lisp :tangle yes
+     (define-key cdlatex-mode-map (vector asymbol-trigger-key) 'asymbol/insert-text-or-symbol)
+     (add-hook 'org-cdlatex-mode-hook
+               (lambda () (interactive)
+               (define-key org-cdlatex-mode-map (vector asymbol-trigger-key) 'asymbol/insert-text-or-symbol)))
+   #+end_src
 
+*** usage
+    - use C-`(asymbol-trigger-key-unicode) to insert unicode symbols, like ⌬, ∲, etc.
+    - like cdlatex-math-modify, use backquote key (asymbol-trigger-key) in latex and org-mode to insert respective code of symbols.  
+
+*** customization
+    You can use customize group. The customization interface is under constructing yet.
