@@ -26,17 +26,17 @@
        (setq asymbol-help-symbol-linewidth 110
              asymbol-help-tag-linewidth 110)
        ;; add keybindings
-       (asymbol/global-input-unicode-symbol-on)
-       (asymbol/latex-input-symbol-on)
-       (asymbol/org-input-symbol-on)
+       (asymbol-global-input-unicode-symbol-on)
+       (asymbol-latex-input-symbol-on)
+       (asymbol-org-input-symbol-on)
        )
    #+end_src
    - using it with cdlatex:
    #+begin_src emacs-lisp :tangle yes
-     (define-key cdlatex-mode-map (vector asymbol-trigger-key) 'asymbol/insert-text-or-symbol)
+     (define-key cdlatex-mode-map (vector asymbol-trigger-key) 'asymbol-insert-text-or-symbol)
      (add-hook 'org-cdlatex-mode-hook
                (lambda () (interactive)
-               (define-key org-cdlatex-mode-map (vector asymbol-trigger-key) 'asymbol/insert-text-or-symbol)))
+               (define-key org-cdlatex-mode-map (vector asymbol-trigger-key) 'asymbol-insert-text-or-symbol)))
    #+end_src
 
 *** usage

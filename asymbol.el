@@ -3,13 +3,13 @@
 ;; Maintainer: dwuggh
 ;; Version: 0.1
 ;; Package-Requires: ((emacs "25.1"))
-;; Homepage: homepage
-;; Keywords: keywords
+;; Homepage: https://github.com-dwuggh-asymbol
+;; Keywords: latex, symbol
 
 
 ;; This file is not part of GNU Emacs
 
-;; This file is free software; you can redistribute it and/or modify
+;; This file is free software; you can redistribute it and-or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation; either version 3, or (at your option)
 ;; any later version.
@@ -20,7 +20,7 @@
 ;; GNU General Public License for more details.
 
 ;; For a full copy of the GNU General Public License
-;; see <http://www.gnu.org/licenses/>.
+;; see <http:--www.gnu.org-licenses->.
 
 
 ;;; Commentary:
@@ -35,19 +35,18 @@
 (defgroup asymbol nil
   "fast inserting math symbols mainly for latex, org-mode"
   :tag "ASymbol"
-  :prefix "asymbol/"
   :prefix "asymbol-"
   :group 'tex)
 
 
 (defcustom asymbol-trigger-key ?`
-  "Prefix key for `asymbol/insert-text-or-symbol'."
+  "Prefix key for `asymbol-insert-text-or-symbol'."
   :group 'asymbol
   :type '(choice
           (character)))
 
 (defcustom asymbol-trigger-key-unicode ?\C-`
-  "Prefix key for `asymbol/insert-text-or-symbol'."
+  "Prefix key for `asymbol-insert-text-or-symbol'."
   :group 'asymbol
   :type '(choice
           (character)))
@@ -414,7 +413,7 @@ mostly will be greek alphabets."
   '(
     (?1 ("unary operators" asymbol-symbol-alist-unary-operators asymbol-tag-alist-top-level))
     (?2 ("binary operators" asymbol-symbol-alist-binary-operators asymbol-tag-alist-top-level))
-    (?3 ("set/logic notation" asymbol-symbol-alist-set-logic-notations))
+    (?3 ("set-logic notation" asymbol-symbol-alist-set-logic-notations))
     (?4 ("relations" asymbol-symbol-alist-relations))
     (?5 ("delimiters" asymbol-symbol-alist-delimiters))
     (?6 ("standard functions"))
@@ -439,7 +438,7 @@ Font-lock must be loaded as well to actually get fontified display."
 ;;; utilities ------------------------------------------------------------------
 
 ;; copied from `cdlatex-use-fonts'
-(defun asymbol/use-fonts ()
+(defun asymbol-use-fonts ()
   ;; Return t if we can and want to use fonts.
   (and window-system
        asymbol-use-fonts
@@ -447,7 +446,7 @@ Font-lock must be loaded as well to actually get fontified display."
 
 ;; maybe there are better ways to write composite functions?
 ;; maybe use dash's `-compose'?
-(defun asymbol/alist-max-layer (alist)
+(defun asymbol-alist-max-layer (alist)
   "return maximum layers needed for this alist.
 it is actually the max length of `(cdr alist)'.
 if alist is nil, return 0."
@@ -455,14 +454,14 @@ if alist is nil, return 0."
     0))
 
 
-(defun asymbol/print-help-list (alist layer &optional linewidth max-cnt sparse)
+(defun asymbol-print-help-list (alist layer &optional linewidth max-cnt sparse)
   "print the help buffer according to alist.
 linewidth is not the buffer's width.
 max-cnt is the number of elements (from alist) shown in one line."
   (or linewidth (setq linewidth 100))
   (or max-cnt (setq max-cnt 4))
   (let ((cnt 0)
-        (flock (asymbol/use-fonts))
+        (flock (asymbol-use-fonts))
         ;; 3 is the width of the character and 2 space
         (interval (- (/ linewidth max-cnt) 3)))
     (dolist (element alist)
@@ -492,7 +491,7 @@ max-cnt is the number of elements (from alist) shown in one line."
     )
   )
 
-(defun asymbol/update-help-buffer (title taglist symlist layer max-layer level-desc)
+(defun asymbol-update-help-buffer (title taglist symlist layer max-layer level-desc)
   "Update help windows for tags and symbols.
 Create one if the help does not exist."
   (if (get-buffer-window " *ASymbol Help*")
@@ -503,15 +502,15 @@ Create one if the help does not exist."
   (insert "navigation tags\n")
   (insert "--------------------------------------------------------------------------------\n")
   ;; taglist most likely to have less layers
-  (asymbol/print-help-list taglist (min layer (- (asymbol/alist-max-layer taglist) 1))
+  (asymbol-print-help-list taglist (min layer (- (asymbol-alist-max-layer taglist) 1))
                            asymbol-help-tag-linewidth asymbol-help-tag-count)
   (insert "\nsymbols\n")
   (insert "--------------------------------------------------------------------------------\n")
-  (asymbol/print-help-list symlist layer asymbol-help-symbol-linewidth asymbol-help-symbol-count)
+  (asymbol-print-help-list symlist layer asymbol-help-symbol-linewidth asymbol-help-symbol-count)
   (message (concat level-desc ": layer %d of %d") (+ 1 layer) max-layer)
   )
 
-(defun asymbol/read-char-with-help (taglist symlist)
+(defun asymbol-read-char-with-help (taglist symlist)
   "like `cdlatex-read-char-with-help', read a char from keyboard and provide help
 taglist is the current alist of navigation tags.
 symlist is the current alist of symbols.
@@ -525,32 +524,32 @@ layers are switched through `asymbol-trigger-key'
         value
         (level-desc "top level ")
         (layer 0)
-        (max-layer (max (asymbol/alist-max-layer taglist)
-                        (asymbol/alist-max-layer symlist))))
+        (max-layer (max (asymbol-alist-max-layer taglist)
+                        (asymbol-alist-max-layer symlist))))
     ;; exit only when finally get a symbol and ready for insert, or just abort
     (catch 'exit
       (save-window-excursion
-        (asymbol/update-help-buffer "asymbol help" taglist symlist layer max-layer level-desc)
+        (asymbol-update-help-buffer "asymbol help" taglist symlist layer max-layer level-desc)
         (while t
           (setq char (read-char))
           (cond
            ((or (= char ?\e) (= char ?\C-g)) (keyboard-quit))
            ((= char asymbol-trigger-key)
             (setq layer (% (+ 1 layer) max-layer))
-            (asymbol/update-help-buffer "asymbol help" taglist symlist layer max-layer level-desc)
+            (asymbol-update-help-buffer "asymbol help" taglist symlist layer max-layer level-desc)
             )
 
            ;; rewrite help buffer for which tag points to
            ((setq value (assoc char taglist))
             (let* ((key (car value))
-                   (tuple (nth (min layer (- (asymbol/alist-max-layer taglist) 1)) (cdr value)))
+                   (tuple (nth (min layer (- (asymbol-alist-max-layer taglist) 1)) (cdr value)))
                    (target (cdr tuple)))
               (setq taglist (or (symbol-value (car (cdr target))) asymbol-tag-alist-top-level))
               (setq symlist (symbol-value (car target)))
               (setq level-desc (car tuple))
-              (setq max-layer (max (asymbol/alist-max-layer taglist)
-                                   (asymbol/alist-max-layer symlist)))
-              (asymbol/update-help-buffer "asymbol help" taglist symlist 0 max-layer level-desc)
+              (setq max-layer (max (asymbol-alist-max-layer taglist)
+                                   (asymbol-alist-max-layer symlist)))
+              (asymbol-update-help-buffer "asymbol help" taglist symlist 0 max-layer level-desc)
               ;; (message (concat desc ": layer %d of %d") layer max-layer)
               ))
 
@@ -561,11 +560,11 @@ layers are switched through `asymbol-trigger-key'
             ))
           )))))
 
-(defun asymbol/insert-text-or-symbol (&optional text-or-symbol tuple)
+(defun asymbol-insert-text-or-symbol (&optional text-or-symbol tuple)
   "insert the text or symbol in tuple"
   (interactive)
   (or tuple
-      (setq tuple (asymbol/read-char-with-help asymbol-tag-alist-top-level asymbol-symbol-alist-top-level)))
+      (setq tuple (asymbol-read-char-with-help asymbol-tag-alist-top-level asymbol-symbol-alist-top-level)))
   (or text-or-symbol (setq text-or-symbol 'text))
   (case text-or-symbol
     ('text (insert (car tuple)))
@@ -576,34 +575,34 @@ layers are switched through `asymbol-trigger-key'
 ;;; keybindings -----------------------------------------------------------------
 
 ;; TODO rewrite these ugly functions
-(defun asymbol/latex-input-symbol-on ()
+(defun asymbol-latex-input-symbol-on ()
   "use asymbol in LaTeX."
   (add-hook 'tex-mode-hook
             (lambda () (interactive)
-              (define-key latex-mode-map (vector asymbol-trigger-key) 'asymbol/insert-text-or-symbol)
-              (define-key LaTeX-mode-map (vector asymbol-trigger-key) 'asymbol/insert-text-or-symbol)
+              (define-key latex-mode-map (vector asymbol-trigger-key) 'asymbol-insert-text-or-symbol)
+              (define-key LaTeX-mode-map (vector asymbol-trigger-key) 'asymbol-insert-text-or-symbol)
               ))
   (add-hook 'LaTeX-mode-hook
             (lambda () (interactive)
-              (define-key LaTeX-mode-map (vector asymbol-trigger-key) 'asymbol/insert-text-or-symbol)))
+              (define-key LaTeX-mode-map (vector asymbol-trigger-key) 'asymbol-insert-text-or-symbol)))
   ;; (when (fboundp 'cdlatex-mode)
-  ;;   (define-key cdlatex-mode-map (vector asymbol-trigger-key) 'asymbol/insert-text-or-symbol))
+  ;;   (define-key cdlatex-mode-map (vector asymbol-trigger-key) 'asymbol-insert-text-or-symbol))
   )
 
-(defun asymbol/org-input-symbol-on ()
+(defun asymbol-org-input-symbol-on ()
   "Use asymbol in org-mode."
   (add-hook 'org-mode-hook
             (lambda () (interactive)
-              (define-key org-mode-map (vector asymbol-trigger-key) 'asymbol/insert-text-or-symbol)))
+              (define-key org-mode-map (vector asymbol-trigger-key) 'asymbol-insert-text-or-symbol)))
   ;; (when (fboundp 'org-cdlatex-mode)
-  ;;   (define-key org-cdlatex-mode-map (vector asymbol-trigger-key) 'asymbol/insert-text-or-symbol))
+  ;;   (define-key org-cdlatex-mode-map (vector asymbol-trigger-key) 'asymbol-insert-text-or-symbol))
   )
 
-(defun asymbol/global-input-unicode-symbol-on ()
+(defun asymbol-global-input-unicode-symbol-on ()
   "turn on asymbol's unicode symbol input method globally.
 use `asymbol-trigger-key-unicode' to activate(default `C-\`', Ctrl-backquote)"
   (global-set-key (vector asymbol-trigger-key-unicode)
-                  (lambda () (interactive) (asymbol/insert-text-or-symbol 'symbol)))
+                  (lambda () (interactive) (asymbol-insert-text-or-symbol 'symbol)))
   )
 
 (provide 'asymbol)
