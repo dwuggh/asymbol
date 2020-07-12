@@ -27,7 +27,7 @@ jobs:
     - name: Set up Emacs
       uses: purcell/setup-emacs@v2.0
       with:
-        version: 26.3
+        version: [25.1, 26.3]
 
     # Runs a single command using the runners shell
     - name: Emacs Lisp check

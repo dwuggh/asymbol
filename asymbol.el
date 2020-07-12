@@ -2,7 +2,7 @@
 ;; Author: dwuggh
 ;; Maintainer: dwuggh
 ;; Version: 0.1
-;; Package-Requires: (dependencies)
+;; Package-Requires: ((emacs "25.1"))
 ;; Homepage: homepage
 ;; Keywords: keywords
 
