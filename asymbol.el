@@ -450,7 +450,7 @@ Font-lock must be loaded as well to actually get fontified display."
   "return maximum layers needed for this alist.
 it is actually the max length of `(cdr alist)'.
 if alist is nil, return 0."
-  (if alist (reduce 'max (map 'list (lambda (el) (length (cdr el))) alist))
+  (if alist (cl-reduce 'max (cl-map 'list (lambda (el) (length (cdr el))) alist))
     0))
 
 
