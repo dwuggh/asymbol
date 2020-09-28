@@ -24,24 +24,29 @@
        :init
        ;; a little customization
        (setq asymbol-help-symbol-linewidth 110
-             asymbol-help-tag-linewidth 110)
-       ;; add keybindings
-       (asymbol-global-input-unicode-symbol-on)
-       (asymbol-latex-input-symbol-on)
-       (asymbol-org-input-symbol-on)
+	     asymbol-help-tag-linewidth 110)
+
+       ;; enable in org-mode and tex-mode
+       (add-hook 'org-mode-hook #'asymbol-mode)
+       (add-hook 'tex-mode-hook #'asymbol-mode)
+
+       ;; or use globally
+       (global-asymbol-mode 1)
        )
    #+end_src
-   - using it with cdlatex:
+   - using it with cdlatex(if the keybindings conflict):
    #+begin_src emacs-lisp :tangle yes
-     (define-key cdlatex-mode-map (vector asymbol-trigger-key) 'asymbol-insert-text-or-symbol)
      (add-hook 'org-cdlatex-mode-hook
                (lambda () (interactive)
-               (define-key org-cdlatex-mode-map (vector asymbol-trigger-key) 'asymbol-insert-text-or-symbol)))
+               (define-key org-cdlatex-mode-map "`" 'asymbol-insert-text-or-symbol)))
    #+end_src
 
 *** usage
-    - use C-`(asymbol-trigger-key-unicode) to insert unicode symbols, like ⌬, ∲, etc.
-    - like cdlatex-math-modify, use backquote key (asymbol-trigger-key) in latex and org-mode to insert respective code of symbols.  
+    - use "C-`"(asymbol-trigger-key-unicode) to insert unicode symbols, like ⌬, ∲, etc.
+    - use "`"(asymbol-trigger-key) in latex and org-mode to insert latex code.
+    - use "C-~" to insert latex code in `global-asymbol-map`.
+    - use ";" after triggered to input "`"
+    - you can customize `asymbol-trigger-key-unicode` and `asymbol-trigger-key`.
 
 *** customization
     You can use customize group. The customization interface is under constructing yet.

@@ -295,7 +295,7 @@
    (?W ( "\\Omega"  "Ω" ))
    (?w ( "\\omega"  "ω" ) ( "\\piv"  "ϖ" ))
    
-   
+   (?\; ("`" "`"))
    ;; ("\\theta2" "ϑ")
    ;; (( "\\upsih"  "ϒ" ))
    )
@@ -571,38 +571,44 @@ layers are switched through `asymbol-trigger-key'
     ('symbol (insert (car (cdr tuple)))))
   )
 
+;;;###autoload
+(defun asymbol-insert-unicode (&optional tuple)
+  "insert the unicode symbol in tuple"
+  (interactive)
+  (or tuple
+      (setq tuple (asymbol-read-char-with-help asymbol-tag-alist-top-level asymbol-symbol-alist-top-level)))
+  (insert (car (cdr tuple))))
+
+;;;###autoload
+(defun asymbol-insert-latex-code (&optional tuple)
+  "insert latex code for symbol in tuple"
+  (interactive)
+  (or tuple
+      (setq tuple (asymbol-read-char-with-help asymbol-tag-alist-top-level asymbol-symbol-alist-top-level)))
+  (insert (car tuple)))
 
 ;;; keybindings -----------------------------------------------------------------
 
-;; TODO rewrite these ugly functions
-(defun asymbol-latex-input-symbol-on ()
-  "use asymbol in LaTeX."
-  (add-hook 'tex-mode-hook
-            (lambda () (interactive)
-              (define-key latex-mode-map (vector asymbol-trigger-key) 'asymbol-insert-text-or-symbol)
-              (define-key LaTeX-mode-map (vector asymbol-trigger-key) 'asymbol-insert-text-or-symbol)
-              ))
-  (add-hook 'LaTeX-mode-hook
-            (lambda () (interactive)
-              (define-key LaTeX-mode-map (vector asymbol-trigger-key) 'asymbol-insert-text-or-symbol)))
-  ;; (when (fboundp 'cdlatex-mode)
-  ;;   (define-key cdlatex-mode-map (vector asymbol-trigger-key) 'asymbol-insert-text-or-symbol))
+;;;###autoload
+(define-minor-mode asymbol-mode
+  "unicode or latex code for symbol input method"
+  :keymap (let ((keymap (make-sparse-keymap)))
+	    (define-key keymap (vector asymbol-trigger-key) 'asymbol-insert-latex-code)
+	    (define-key keymap (vector asymbol-trigger-key-unicode) 'asymbol-insert-unicode)
+	    keymap)
+  :init-value nil
+  :global nil
   )
 
-(defun asymbol-org-input-symbol-on ()
-  "Use asymbol in org-mode."
-  (add-hook 'org-mode-hook
-            (lambda () (interactive)
-              (define-key org-mode-map (vector asymbol-trigger-key) 'asymbol-insert-text-or-symbol)))
-  ;; (when (fboundp 'org-cdlatex-mode)
-  ;;   (define-key org-cdlatex-mode-map (vector asymbol-trigger-key) 'asymbol-insert-text-or-symbol))
-  )
-
-(defun asymbol-global-input-unicode-symbol-on ()
-  "turn on asymbol's unicode symbol input method globally.
-use `asymbol-trigger-key-unicode' to activate(default `C-\`', Ctrl-backquote)"
-  (global-set-key (vector asymbol-trigger-key-unicode)
-                  (lambda () (interactive) (asymbol-insert-text-or-symbol 'symbol)))
+;;;###autoload
+(define-minor-mode global-asymbol-mode
+  "unicode or latex code for symbol input method"
+  :keymap (let ((keymap (make-sparse-keymap)))
+	    (define-key keymap (kbd "C-~") 'asymbol-insert-latex-code)
+	    (define-key keymap (vector asymbol-trigger-key-unicode) 'asymbol-insert-unicode)
+	    keymap)
+  :init-value nil
+  :global t
   )
 
 (provide 'asymbol)
