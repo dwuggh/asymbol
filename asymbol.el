@@ -222,83 +222,83 @@
 (defcustom asymbol-symbol-alist-top-level
   '(
 
-   (?A ("\\Alpha"  "Α" ))
-   (?a ( "\\alpha"  "α" ))
-   
-   (?B ( "\\Beta"  "Β" ))
-   (?b ( "\\beta"  "β" ))
+    (?A ("\\Alpha"  "Α" ))
+    (?a ( "\\alpha"  "α" ))
+    
+    (?B ( "\\Beta"  "Β" ))
+    (?b ( "\\beta"  "β" ))
 
-   (?G ( "\\Gamma"  "Γ" ))
-   (?g ( "\\gamma"  "γ" ))
-   
-   (?D ( "\\Delta"  "Δ" ))
-   (?d ( "\\delta"  "δ" ))
-   
-   (?E ( "\\Epsilon"  "Ε" ))
-   (?e ( "\\epsilon"  "ε" ))
-   
-   (?Z ( "\\Zeta"  "Ζ" ))
-   (?z ( "\\zeta"  "ζ" ))
-   
-   (?H ( "\\Eta"  "Η" ))
-   (?h ( "\\eta"  "η" ))
-   
-   (?Q ( "\\Theta"  "Θ" ))
-   (?q ( "\\theta"  "θ" ))
-   
-   (?I ( "\\Iota"  "Ι" ))
-   (?i ( "\\iota"  "ι" ))
-   
-   (?K ( "\\Kappa"  "Κ" ))
-   (?k ( "\\kappa"  "κ" ) ("\\varkappa" "ϰ"))
-   
-   (?L ( "\\Lambda"  "Λ" ))
-   (?l ( "\\lambda"  "λ" ))
-   
-   (?M ( "\\Mu"  "Μ" ))
-   (?m ( "\\mu"  "μ" ))
-   
-   (?N ( "\\Nu"  "Ν" ))
-   (?n ( "\\nu"  "ν" ))
-   
-   (?X ( "\\Xi"  "Ξ" ))
-   (?x ( "\\xi"  "ξ" ))
-   
-   (?O ( "\\Omicron"  "Ο" ))
-   (?o ( "\\omicron"  "ο" ))
-   
-   (?P ( "\\Pi"  "Π" ))
-   (?p ( "\\pi"  "π" ))
-   
-   (?R ( "\\Rho"  "Ρ" ))
-   (?r ( "\\rho"  "ρ" ) ("\\varrho" "ϱ"))
-   
-   
-   (?S ( "\\Sigma"  "Σ" ))
-   (?s ( "\\sigma"  "σ" ) ( "\\varsigma"  "ς" ))
-   
-   (?T ( "\\Tau"  "Τ" ))
-   (?t ( "\\tau"  "τ" ))
-   
-   (?U ( "\\Upsilon"  "Υ" ))
-   (?u ( "\\upsilon"  "υ" ))
+    (?G ( "\\Gamma"  "Γ" ))
+    (?g ( "\\gamma"  "γ" ))
+    
+    (?D ( "\\Delta"  "Δ" ))
+    (?d ( "\\delta"  "δ" ))
+    
+    (?E ( "\\Epsilon"  "Ε" ))
+    (?e ( "\\epsilon"  "ε" ))
+    
+    (?Z ( "\\Zeta"  "Ζ" ))
+    (?z ( "\\zeta"  "ζ" ))
+    
+    (?H ( "\\Eta"  "Η" ))
+    (?h ( "\\eta"  "η" ))
+    
+    (?Q ( "\\Theta"  "Θ" ))
+    (?q ( "\\theta"  "θ" ))
+    
+    (?I ( "\\Iota"  "Ι" ))
+    (?i ( "\\iota"  "ι" ))
+    
+    (?K ( "\\Kappa"  "Κ" ))
+    (?k ( "\\kappa"  "κ" ) ("\\varkappa" "ϰ"))
+    
+    (?L ( "\\Lambda"  "Λ" ))
+    (?l ( "\\lambda"  "λ" ))
+    
+    (?M ( "\\Mu"  "Μ" ))
+    (?m ( "\\mu"  "μ" ))
+    
+    (?N ( "\\Nu"  "Ν" ))
+    (?n ( "\\nu"  "ν" ))
+    
+    (?X ( "\\Xi"  "Ξ" ))
+    (?x ( "\\xi"  "ξ" ))
+    
+    (?O ( "\\Omicron"  "Ο" ))
+    (?o ( "\\omicron"  "ο" ))
+    
+    (?P ( "\\Pi"  "Π" ))
+    (?p ( "\\pi"  "π" ))
+    
+    (?R ( "\\Rho"  "Ρ" ))
+    (?r ( "\\rho"  "ρ" ) ("\\varrho" "ϱ"))
+    
+    
+    (?S ( "\\Sigma"  "Σ" ))
+    (?s ( "\\sigma"  "σ" ) ( "\\varsigma"  "ς" ))
+    
+    (?T ( "\\Tau"  "Τ" ))
+    (?t ( "\\tau"  "τ" ))
+    
+    (?U ( "\\Upsilon"  "Υ" ))
+    (?u ( "\\upsilon"  "υ" ))
 
-   (?F ( "\\Phi"  "Φ" ))
-   (?f ( "\\varphi"  "φ" ) ( "\\phi" "ϕ" ) )
+    (?F ( "\\Phi"  "Φ" ))
+    (?f ( "\\varphi"  "φ" ) ( "\\phi" "ϕ" ) )
 
-   (?X ( "\\Chi"  "Χ" ))
-   (?x ( "\\chi"  "χ" ))
-   
-   (?P ( "\\Psi"  "Ψ" ))
-   (?p ( "\\psi"  "ψ" ))
-   
-   (?W ( "\\Omega"  "Ω" ))
-   (?w ( "\\omega"  "ω" ) ( "\\piv"  "ϖ" ))
-   
-   (?\; ("`" "`"))
-   ;; ("\\theta2" "ϑ")
-   ;; (( "\\upsih"  "ϒ" ))
-   )
+    (?X ( "\\Chi"  "Χ" ))
+    (?x ( "\\chi"  "χ" ))
+    
+    (?V ( "\\Psi"  "Ψ" ))
+    (?v ( "\\psi"  "ψ" ))
+    
+    (?W ( "\\Omega"  "Ω" ))
+    (?w ( "\\omega"  "ω" ) ( "\\piv"  "ϖ" ))
+    
+    (?\; ("`" "`"))
+    ;; ("\\theta2" "ϑ")
+    ;; (( "\\upsih"  "ϒ" ))
+    )
   "symbols shown on the top level for asymbol.
 mostly will be greek alphabets."
   :group 'asymbol
@@ -496,7 +496,7 @@ max-cnt is the number of elements (from alist) shown in one line."
 Create one if the help does not exist."
   (if (get-buffer-window " *ASymbol Help*")
       (select-window (get-buffer-window " *ASymbol Help*"))
-      (switch-to-buffer-other-window " *ASymbol Help*"))
+    (switch-to-buffer-other-window " *ASymbol Help*"))
   (erase-buffer)
   (insert title "\n\n")
   (insert "navigation tags\n")
@@ -593,9 +593,9 @@ layers are switched through `asymbol-trigger-key'
 (define-minor-mode asymbol-mode
   "unicode or latex code for symbol input method"
   :keymap (let ((keymap (make-sparse-keymap)))
-	    (define-key keymap (vector asymbol-trigger-key) 'asymbol-insert-latex-code)
-	    (define-key keymap (vector asymbol-trigger-key-unicode) 'asymbol-insert-unicode)
-	    keymap)
+            (define-key keymap (vector asymbol-trigger-key) 'asymbol-insert-latex-code)
+            (define-key keymap (vector asymbol-trigger-key-unicode) 'asymbol-insert-unicode)
+            keymap)
   :init-value nil
   :global nil
   )
@@ -604,9 +604,9 @@ layers are switched through `asymbol-trigger-key'
 (define-minor-mode global-asymbol-mode
   "unicode or latex code for symbol input method"
   :keymap (let ((keymap (make-sparse-keymap)))
-	    (define-key keymap (kbd "C-~") 'asymbol-insert-latex-code)
-	    (define-key keymap (vector asymbol-trigger-key-unicode) 'asymbol-insert-unicode)
-	    keymap)
+            (define-key keymap (kbd "C-~") 'asymbol-insert-latex-code)
+            (define-key keymap (vector asymbol-trigger-key-unicode) 'asymbol-insert-unicode)
+            keymap)
   :init-value nil
   :global t
   )
